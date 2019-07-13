@@ -8,6 +8,25 @@ export const hostSetRoom = (payload) => {
   }
 }
 
+export const setScreenLoadingState = (payload) => {
+  console.log('setting host room')
+  return dispatch => {
+    dispatch({
+      type: 'HOST_SET_SCREEN_LOADING_STATE',
+      payload
+    })
+  }
+}
+
+export const setViewResponses = (payload) => {
+  return dispatch => {
+    dispatch({
+      type: 'HOST_SET_VIEW_RESPONSES',
+      payload
+    })
+  }
+}
+
 export const playerJoined = (payload) => {
   return dispatch => {
     dispatch({

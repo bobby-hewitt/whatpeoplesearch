@@ -24,7 +24,7 @@ export default class Grid extends Component {
 					<div className="gridIcon">
 						{grids.map((g, i) => {
 							return (
-								<div className="gridIconSquare" />
+								<div  key={i} className="gridIconSquare" />
 							)
 						})}
 					</div>
@@ -32,15 +32,24 @@ export default class Grid extends Component {
 						?
 					</div>
 				</div>
-				{/*<PageTitle title="What would yougle do" room={room}/>*/}
-				<div className="playersInner">
-				<div className="playersInnerChevron" />
-				{rows.map((color, i) => {
-					return(						
-						<Player key={i} color={color} index={i} {...players[i]} />
-					)
-				})}
+				
+				<div className="playersModalBackground">
+					<div className="playersInner">
+						<div className="playersInnerChevron" />
+						{rows.map((color, i) => {
+							// if (players[i] && players[i].name){
+								return(						
+									<Player key={i} color={color} index={i} {...players[i]} />
+								)
+							// } else {
+								// return <div />
+							// }
+						})}
+					</div>
+					<div className="filler">
+					</div>
 				</div>
+
 			</div>
 		)
 	}

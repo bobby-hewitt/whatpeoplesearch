@@ -14,10 +14,18 @@ function subscribeToPlayerEvents(self) {
 	socket.on('question-input', questionInput.bind(this, self))
 	socket.on('answer-input', answerInput.bind(this, self))
 	socket.on('end-game', endGame.bind(this, self))
+	socket.on('player-error-not-enough-suggestions', errorWithQuestion.bind(this, self))
 }
 
 function roomFull(self){
 	
+}
+
+function errorWithQuestion(self){
+	//need to message the error.
+	console.log('error')
+	self.props.setLoading(false)
+	self.props.push('/p/question-input-error')
 }
 
 function endGame(self){
@@ -55,7 +63,7 @@ function hostQuit(self){
 
 function successJoiningRoom(self, data){
 
-	console.log('successJoiningRoom', data, self)
+	
 	const localData = {
 		name: data.playerData.name,
 		id: data.playerData.id,
@@ -64,7 +72,21 @@ function successJoiningRoom(self, data){
 	window.localStorage.quiz = JSON.stringify(localData)
 	self.props.playerSetSelf(data)
 	self.props.setLoading(false)
-	self.props.push('/p/waiting-start')
+	switch(data.gameState){
+		case 'welcome':
+			return self.props.push('/p/waiting-start')
+		case 'question-entry':
+			return self.props.push('/p/question-input')
+		case 'answer-entry':
+			return self.props.push('/p/answer-input')
+		case 'waiting':
+			return self.props.push('/p/waiting')
+		case 'end':
+			return self.props.push('/p/end')
+		default:
+			return
+	}
+	
 }
 
 function errorJoiningRoom(self, data){

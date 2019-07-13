@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './style.scss'
-import { ColorText } from 'components'
+import { ColorText, InputStyleText } from 'components'
 
 
 
@@ -18,23 +18,22 @@ export default class PageTitle extends Component {
 		}
 		return newTitle
 	}
+
 	render(){
-		const { room, title } = this.props
+		const { room, title, loadingState } = this.props
+		console.log('loading state', loadingState)
 		return(
-			<div className="titleOuterContainer">
+			<div className={`titleOuterContainer ${loadingState === 'out' && 'out'}`}>
 				<ColorText text={title} />
-				<div className="roomCodeContainer">
-					<h4 className="roomCode"><span className="secondary">Room code: </span>{room? room.short : 'no room'}</h4>
-					<img src="http://www.gstatic.com/images/branding/googlemic/2x/googlemic_color_24dp.png" />
-				</div>
-				<div className="luckyButtonsContainer">
+				<InputStyleText primaryText={room? room.short : 'no room'} secondaryText="Room code:" />
+				{/*<div className="luckyButtonsContainer">
 					<div className="luckyButton">
 						<p>I'm feeling great</p>
 					</div>
 					<div className="luckyButton">
 						<p>I'm feeling lucky</p>
 					</div>
-				</div>
+				</div>*/}
 			</div>
 		)
 	}

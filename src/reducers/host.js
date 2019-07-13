@@ -4,6 +4,8 @@ const initialState = {
   gameState:'welcome',
   questionIndex: 0,
   round: 1,
+  viewResponses: false,
+  screenLoadingState: 'unloaded',
   question: {
     question: '',
     answers: []
@@ -18,6 +20,11 @@ const initialState = {
 // question results
 // scores 
 // end
+
+//unoaded
+//in 
+//loaded
+//out
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -114,6 +121,17 @@ export default (state = initialState, action) => {
       return {
         ...state,
         finalPlayers: action.payload
+      }
+    case 'HOST_SET_VIEW_RESPONSES':
+      return {
+        ...state,
+        viewResponses: action.payload
+      }
+    case 'HOST_SET_SCREEN_LOADING_STATE':
+      console.log('setting loading state')
+      return {
+        ...state,
+        screenLoadingState: action.payload
       }
     default:
       return state

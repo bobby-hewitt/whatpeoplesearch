@@ -25,10 +25,16 @@ function hostQuit(self){
 
 function playerAnswer(self, data){
 	const { players } = self.props
-	console.log('player answer received', data)
+
+	
+	var audio = new Audio(require('assets/sounds/bounce.wav'));
+	audio.play()
 	self.props.playerAnswerReceived(data)
 	if (allPlayersHaveAnswered(players)){
-		self.props.push('/host/answers')
+		self.props.sounds.timer.pause()
+		self.props.sounds.timer.currentTime = 0;
+		self.props.setGameState('waiting')
+		self.props.setViewResponses(true)
 	}
 	
 }
@@ -63,16 +69,44 @@ function allPlayersHaveAnswered(players){
 	return answers === players.length ? true : false
 }
 
+
+
 function showHints(self, data){
+	self.props.sounds.typing.pause()
+	self.props.setGameState('waiting')
 	self.props.push('/host/question')
 	self.props.showHints(data)
 }
 
-function startGame(self){
-	self.props.push('/host/instructions')
+function endCountdown(self, data){
+	self.props.sounds.timer.pause()
+	self.props.setGameState('waiting')
+	socket.emit('send-player-waiting', data)
+	self.props.setViewResponses(true)
+}
+
+function startGame(self, data){
+	console.log('starting game', self, data)
+	self.props.sounds.typing.pause()
+	// self.props.sounds.bounce.play()
+	socket.emit('send-player-waiting', self.props.hostRoom)
+	self.props.setScreenLoadingState('out')
+	self.props.sounds.start.play()
+	setTimeout(() => {
+		// self.props.sounds.typing.play()
+		self.props.setGameState('question-entry')
+		self.props.push('/host/instructions')
+	},4000)
+		
+	
+	
+	
 }
 
 function endGame(self){
+	var audio = new Audio(require('assets/sounds/end.wav'));
+	audio.play()
+	self.props.setGameState('end')
 	self.props.push('/host/end')
 	socket.emit('host-end-game', self.props.room)
 }
@@ -97,11 +131,34 @@ function roomGenerated(self, data){
 
 function playerJoined(self, data){
 	// here we need to establish the state of the game and send the user to the correct page when they rejoin
-	
-	data.gameState = self.props.gameState
-	console.log('in', data)
-	socket.emit('host-sending-game-state', data)
 	self.props.playerJoined(data.playerData)
+	if (self.props.gameState === 'question-entry' ){
+		for (var i = 0; i < self.props.players.length; i++){
+			if (data.playerData.id === self.props.players[i].id){
+				if (i === self.props.questionIndex) {
+					data.gameState = 'question-entry'
+				} else {
+					data.gameState = 'waiting'
+				}
+			}
+		}
+	} else if (self.props.gameState === 'answer-entry'){
+		for (var i = 0; i < self.props.players.length; i++){
+			if (data.playerData.id === self.props.players[i].id){
+				if (self.props.players[i].answer) {
+					data.gameState = 'waiting'
+				} else {
+					data.gameState = 'answer-entry'
+				}
+			}
+		}
+	} else {
+		data.gameState = self.props.gameState
+	}
+	
+	self.props.sounds.bounce.play()
+	socket.emit('host-sending-game-state', data)
+	console.log('player-joined', data)
 }
 
 function setPlayerName(self, data){
@@ -109,7 +166,10 @@ function setPlayerName(self, data){
 }
 
 function sendAnswerInput(self, data){
-	console.log('sending answer input')
+	self.props.sounds.typing.pause()
+	self.props.sounds.timer.play()
+	self.props.sounds.timer.loop = true
+	self.props.setGameState('answer-entry')
 	socket.emit('host-send-answer-input', self.props.room)
 }
 
@@ -133,6 +193,7 @@ function joinRoom(data, self){
 
 
 export { 
+	endCountdown,
 	endGame,
 	sendAnswerInput,
 	sendQuestionInput,
