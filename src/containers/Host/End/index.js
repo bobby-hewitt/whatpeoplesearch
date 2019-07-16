@@ -46,13 +46,13 @@ class End extends Component {
 		const { players } = this.props
 		return(
 			<div className="hostEndContainer">
-				<ColorText text="That's all folks!"/>
+				<ColorText text="That's it!"/>
 				<div className="finalPlayerOuterContainer">
 				{players && players.map((player, i) => {
 					return(
-						<div className={`finalPlayerInnerContainer ${this.state.visible >= i && 'isVisible'}`}>
+						<div key={i}className={`finalPlayerInnerContainer ${this.state.visible >= i && 'isVisible'}`}>
 						<h4>#{i+1}</h4>
-						<Player color={colors[i]}key={i} {...player} />
+						<Player color={colors[i]}key={i} {...player} large/>
 						</div>
 					)
 				})}

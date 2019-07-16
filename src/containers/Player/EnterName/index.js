@@ -27,15 +27,15 @@ class NameTeam extends Component {
 	}
 
 	onChange(key, e){
-		console.log(key, e.target.value)
-		this.setState({[key]: e.target.value})
+		const value = key === 'roomcode' ? e.target.value.toUpperCase() : e.target.value
+		this.setState({[key]: value})
 	}
 
 	render(){
 		const { name, roomcode } = this.state
 		return(
 			<div className="loginContainer">
-				<ColorText text="Let's get started" letterStyle={{fontSize:'50px'}}/>
+				<ColorText text="Let's go" letterStyle={{fontSize:'50px'}}/>
 				<TextInput 
 					placeholder="Name"
 					value={name} 

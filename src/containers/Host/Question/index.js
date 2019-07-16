@@ -17,11 +17,18 @@ export default class Question extends Component {
 	}
 
 	componentDidMount(){
-		// this.showAnswer(0)
+		if (this.props.answers.length){
+			setTimeout(() => {
+				this.showSearchTerm(0)
+			},100)
+		}
 	}
 
 	countdown(isStart){
-		if (isStart) this.setState({countdown: 60})
+		if (isStart) {
+			this.setState({countdown: 60})
+			this.props.sounds.bell.play()
+		}
 		this.countdownTimeout = setTimeout(() => {
 			if (this.state.countdown > 0){
 				this.setState({countdown: this.state.countdown - 1})
@@ -31,6 +38,7 @@ export default class Question extends Component {
 				}
 			} else {
 				this.props.timerSound.pause();
+				this.props.sounds.alarm.play()
     			this.props.timerSound.currentTime = 0;
 				//end countdown
 				endCountdown(this, this.props.room)
@@ -38,10 +46,23 @@ export default class Question extends Component {
 		},1000)
 	}
 
+	clearCountdown(){
+		clearTimeout(this.countdownTimeout)
+		this.setState({countdown: false})
+	}
+
+	showSearchTerm(){
+		this.props.sounds.interstitial1.play()
+		this.setState({showSearchTerm: true})
+		setTimeout(() => {
+			this.showAnswer(0)
+		},300)
+	}
+
 	componentWillReceiveProps(np){
 		if (!this.props.answers.length && np.answers.length){
 			setTimeout(() => {
-				this.showAnswer(0)
+				this.showSearchTerm(0)
 			},100)
 		}
 		if (this.props.isAnswers !== np.isAnswers){
@@ -56,15 +77,14 @@ export default class Question extends Component {
 
 	showAnswer(index){
 		const { answers } = this.props
-		console.log(answers)
 		this.timeout = setTimeout(() => {
 			this.setState({visible: index}, () => {
 				console.log('showing answers', index, answers.length)
 				if (answers && index < answers.length -1){
 					this.showAnswer(index +1)
-					setTimeout(() => {
-						this.props.sounds.bounce.play()
-					},400)
+					// setTimeout(() => {
+					// 	// this.props.sounds.bounce.play()
+					// },50)
 					
 				} else {
 					setTimeout(() =>{
@@ -75,7 +95,7 @@ export default class Question extends Component {
 				}
 			})
 
-		},300)
+		},100)
 	}
 
 	componentWillUnmount(){
@@ -88,7 +108,7 @@ export default class Question extends Component {
 
 
 	render(){
-		const { question, answers, isQuestion, isAnswers, players, sounds } = this.props
+		const { question, answers, isQuestion, isAnswers, players, sounds, loadingState } = this.props
 		return(
 			<div className="questionContainer">
 				{(this.state.countdown || this.state.countdown === 0) &&
@@ -97,14 +117,16 @@ export default class Question extends Component {
 				<div className="questionInfoContainer">
 				
 				
-					<QuestionHeader text="Fill in the blanks" setGameState={this.props.setGameState.bind(this)} sounds={sounds}/>
-				
+					<QuestionHeader clearCountdown={this.clearCountdown.bind(this)}text="Fill in the blanks" setGameState={this.props.setGameState.bind(this)} sounds={sounds}/>
+	
 				</div>
 				<div className="questionAndAnswerContainer">
 				
-				<div className="questionShadowContainer">
+				<div className={`questionShadowContainer ${loadingState === 'in' && 'isVisible'}`}>
 				<div className="questionInnerContainer">
-					<InputStyleText primaryText={`${question}...`} containerStyle={{margin:'0px'}}/>
+					<div className="questionController">
+					<InputStyleText isVisible={this.state.showSearchTerm}primaryText={`${question}...`} containerStyle={{margin:'0px'}}/>
+					</div>
 					<div className="responseContainer">
 					{players && !isAnswers && players.map((player, i ) => {
 						if (player.answer){
