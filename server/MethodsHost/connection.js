@@ -2,6 +2,8 @@ const Rooms = require('../models/rooms')
 
 exports.connected = function(socket){
 	// unique room codes 
+	console.log('connecting')
+
 
 	function createCode(){
 		console.log('creating code')
@@ -20,8 +22,9 @@ exports.connected = function(socket){
 		})
 	}
 	function storeRoom(room){
-		Rooms.create({short: room, long: socket.id}, ()=> {
-			socket.emit('host-room-code-generated', room)
+		Rooms.create({short: room, long: socket.id}, (err, roomCreated)=> {
+			console.log('room', roomCreated)
+			socket.emit('host-room-generated', roomCreated)
 		})
 	}
 	createUniqueRoomId()

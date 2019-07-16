@@ -120,7 +120,7 @@ function restartGame(self, data){
 	setTimeout(() => {
 		self.props.setScreenLoadingState('in')
 		// self.props.sounds.typing.play()
-		self.props.setGameState('question-entry')
+		// self.props.setGameState('question-entry')
 		self.props.push('/host/question-input')
 		sendQuestionInput(self)
 	},3500)
@@ -154,6 +154,7 @@ function playerLeft(self, data){
 }
 
 function roomGenerated(self, data){
+	console.log('room generated', data)
 	self.props.hostSetRoom(data)
 }
 
