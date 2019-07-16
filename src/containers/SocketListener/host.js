@@ -137,6 +137,7 @@ function endGame(self){
 function sendQuestionInput(self){
 	self.props.sounds.typing.play()
 	//this function should push to host holding screen
+	self.props.setGameState('question-entry')
 	const player = self.props.players[self.props.questionIndex ]
 	const data = {
 		player, 
