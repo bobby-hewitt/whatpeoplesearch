@@ -188,7 +188,7 @@ class QuestionHeader extends Component {
 			setTimeout(() => {
 				console.log('moving forwards')
 				this.setState({player: players[questionIndex], bonus: answeredCount}, () => {
-					newPlayers[questionIndex].score += 500 * answeredCount
+					newPlayers[questionIndex].score += 100 * answeredCount
 					this.props.updatePlayers(newPlayers)
 					
 					setTimeout(() => {
