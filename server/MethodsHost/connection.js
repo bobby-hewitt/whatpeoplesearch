@@ -20,7 +20,7 @@ exports.connected = function(socket){
 	function storeRoom(room){
 		Rooms.create({short: room, long: socket.id}, (err, roomToSend)=> {
 
-			socket.emit('host-room-code-generated', roomToSend)
+			socket.emit('host-room-generated', roomToSend)
 		})
 	}
 	
