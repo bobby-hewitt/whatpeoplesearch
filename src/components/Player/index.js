@@ -32,7 +32,7 @@ export default class Player extends Component {
 	render(){
 		const { name, image, planet, isConnected, color, index, score, hasSubmitted, large } = this.props
 		return(
-			<div className={`hostPlayerOuterContainer ${large && 'large'}`}>
+			<div className={`hostPlayerOuterContainer ${large && 'large'}  ${name && 'isVisible'}`}>
 			<div 
 				className={`hostPlayerContainer ${!isConnected && 'isDisconnected'} ${large && 'large'}`}
 				>
