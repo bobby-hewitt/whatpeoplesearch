@@ -1,4 +1,5 @@
 import openSocket from 'socket.io-client';
+import ReactGA from 'react-ga';
 var socket;
 
 function subscribeToHostEvents(self) {
@@ -7,7 +8,8 @@ function subscribeToHostEvents(self) {
 	} else {
 		socket = openSocket('https://whatpeoplesearch.herokuapp.com');
 	}
-	
+	ReactGA.initialize('UA-144165883-1');
+	ReactGA.pageview('host')
 	
 	socket.emit('host-connected')
 	socket.on('host-room-generated', roomGenerated.bind(this,self))

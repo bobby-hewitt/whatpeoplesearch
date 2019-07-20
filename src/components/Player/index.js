@@ -16,7 +16,7 @@ export default class Player extends Component {
 		this.setState({showPoints:true}, () => {
 			this.timeout = setTimeout(() => {
 				this.setState({showPoints: false})
-			}, 500)
+			}, 800)
 		})
 	}
 
@@ -48,7 +48,9 @@ export default class Player extends Component {
 				<p className="score">{score || 0}</p>
 			</div>
 			{this.state.showPoints && 
-				<Points />
+				
+				<Points large={large}/>
+
 			}
 			</div>
 		)

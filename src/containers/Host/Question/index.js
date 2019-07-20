@@ -109,6 +109,7 @@ export default class Question extends Component {
 
 	render(){
 		const { question, answers, isQuestion, isAnswers, players, sounds, loadingState } = this.props
+		const maxOffsetScoresIndex = players.length <= 2 ? 1 : players.length <= 4 ? 4 : players.length <= 6 ? 7 : 10
 		return(
 			<div className="questionContainer">
 				{(this.state.countdown || this.state.countdown === 0) &&
@@ -145,7 +146,7 @@ export default class Question extends Component {
 				{answers && answers.map((answer, i) => {
 					if (!answer.show){
 						return (
-							<div key={i} className={`hostHintContainer ${i % 2 === 0 && 'grey'} ${this.state.visible >= i && 'isVisible'}`}>
+							<div key={i} className={`hostHintContainer ${i % 2 === 0 && 'grey'} ${this.state.visible >= i && 'isVisible'} ${i <= maxOffsetScoresIndex && 'offsetRight'}`}>
 								{answer && answer.hint && answer.hint.map((letter, j) => {
 
 									if (j === 0 || answer.hint[j-1] === ' '){
@@ -169,11 +170,11 @@ export default class Question extends Component {
 					} else {
 						
 						return(
-							<div key={i} className={`hostHintContainer isVisible ${i % 2 === 0 && 'grey'}`}>
+							<div key={i} className={`hostHintContainer isVisible ${i % 2 === 0 && 'grey'} ${i <= maxOffsetScoresIndex && 'offsetRight'}`}>
 								<p className={`revealedAnswer ${answer.isUndiscovered && 'undiscovered'}`}>{answer.answer}</p>
 								<div className="answerScoreContainer">
 								{answer.players && answer.players.map((player, j) => {
-									console.log('player in answer')
+									
 									return(
 										<p key={`${i}${j}`}className="playerInAnswer">{players[player].name}</p>
 									)
