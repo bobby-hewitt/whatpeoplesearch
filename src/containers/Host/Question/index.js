@@ -79,7 +79,7 @@ export default class Question extends Component {
 		const { answers } = this.props
 		this.timeout = setTimeout(() => {
 			this.setState({visible: index}, () => {
-				console.log('showing answers', index, answers.length)
+				
 				if (answers && index < answers.length -1){
 					this.showAnswer(index +1)
 					// setTimeout(() => {
@@ -132,11 +132,11 @@ export default class Question extends Component {
 					{players && !isAnswers && players.map((player, i ) => {
 						if (player.answer){
 							return(
-								<p className="responseIndicator">{player.name}</p>
+								<p key={i} className="responseIndicator">{player.name}</p>
 
 							)
 						} else {
-							return<div/>
+							return<div key={i}/>
 						}
 					})}
 					</div>
@@ -151,16 +151,17 @@ export default class Question extends Component {
 
 									if (j === 0 || answer.hint[j-1] === ' '){
 										return(
-											<p key={`${i}${j}`}className={`hintLetter ${letter === ' ' && 'space'}`}>
+											<p key={`${i}${j}1`}className={`hintLetter ${letter === ' ' && 'space'}`}>
 												{answer.answer[j]}
 											</p>
 										)
+									} else {
+										return(
+											<p key={`${i}${j}2`}className={`hintLetter ${letter === ' ' && 'space'}`}>
+												{letter}
+											</p>
+										)
 									}
-									return(
-										<p key={`${i}${j}`}className={`hintLetter ${letter === ' ' && 'space'}`}>
-											{letter}
-										</p>
-									)
 								})}
 								<div className="answerScoreContainer">
 									<p className="answerScore">{answer.score}</p>
@@ -168,7 +169,6 @@ export default class Question extends Component {
 							</div>
 						)
 					} else {
-						
 						return(
 							<div key={i} className={`hostHintContainer isVisible ${i % 2 === 0 && 'grey'} ${i <= maxOffsetScoresIndex && 'offsetRight'}`}>
 								<p className={`revealedAnswer ${answer.isUndiscovered && 'undiscovered'}`}>{answer.answer}</p>
@@ -176,7 +176,7 @@ export default class Question extends Component {
 								{answer.players && answer.players.map((player, j) => {
 									
 									return(
-										<p key={`${i}${j}`}className="playerInAnswer">{players[player].name}</p>
+										<p key={`${i}${j}3`}className="playerInAnswer">{players[player].name}</p>
 									)
 								})}
 								<p className="answerScore">{answer.score}</p>

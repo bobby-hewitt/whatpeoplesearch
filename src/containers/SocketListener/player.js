@@ -57,13 +57,13 @@ function answerInput(self){
 
 function sendQuestion(self, data){
 	socket.emit('player-submit-question', data)
-	self.props.setLoading(true)
+	self.props.push('/p/waiting')
 }
 
 function sendAnswer(self, data){
 	console.log('sending answer', data)
 	socket.emit('player-send-answer', data)
-	self.props.setLoading(true)
+	self.props.push('/p/waiting')
 }
 
 function hostQuit(self){
