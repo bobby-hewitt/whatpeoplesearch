@@ -16,6 +16,13 @@
 		align-items:center;
 		background:#DB4437;
 	}
+	&.help{
+		background:#0F9D58;
+		width:100%;
+		display: flex;
+		margin-top:30px;
+		align-items:center;
+	}
 	p{
 		margin-top:-2px;
 		line-height: 50px;
