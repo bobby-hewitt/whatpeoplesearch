@@ -85,3 +85,8 @@ exports.sendPlayerWaiting = (socket, io, data) => {
 exports.sendAnswerInput = ( socket, io, data) => {
 	socket.broadcast.to(data.long).emit('answer-input')
 }
+
+exports.sendLikes = ( socket, io, data) => {
+	console.log('sending likes')
+	socket.broadcast.to(data.room.long).emit('host-sending-likes', data)	
+}
