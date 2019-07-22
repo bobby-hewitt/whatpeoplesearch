@@ -13,7 +13,7 @@ import End from './End'
 import Loading from './Loading'
 import ScoreBoard from './ScoreBoard'
 import { PlayerGrid } from 'components'
-import { setViewResponses, setGameState, setScreenLoadingState } from 'actions/host'
+import { setViewResponses, setGameState, setScreenLoadingState, nextQuestion } from 'actions/host'
 import { sendQuestionInput } from 'containers/SocketListener/host'
 class Host extends Component {
 
@@ -90,6 +90,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   push: (path) => push(path),
   setViewResponses,
+  nextQuestion,
   setScreenLoadingState,
   setGameState,
 }, dispatch)

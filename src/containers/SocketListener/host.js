@@ -182,7 +182,7 @@ function sendQuestionInput(self){
 	//this function should push to host holding screen
 	
 	
-	
+		self.props.nextQuestion(0)
 		self.props.push('/host/question-input')
 		self.props.setScreenLoadingState('in')	
 		playVoiceover(self, 'choosePlayer')

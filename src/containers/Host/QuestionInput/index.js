@@ -47,9 +47,9 @@ export default class QuestionInput extends Component {
 				{!isChoosing &&
 					<ColorText text={name} loadComplete={this.loadComplete.bind(this)}/>
 				}
-				{!isChoosing &&
-				<InputStyleText isVisible={this.state.isLoaded}secondaryText={"Enter your search term"}/>
-				}
+				
+				<InputStyleText isVisible={this.state.isLoaded  && !isChoosing}secondaryText={"Enter your search term"}/>
+				
 			</div>
 			
 		)
