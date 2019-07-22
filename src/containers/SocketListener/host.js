@@ -32,13 +32,19 @@ function hostQuit(self){
 	
 }
 
+function playVoiceover(self, key){
+	console.log('playing voice', key, self)
+	const index = Math.floor(Math.random() * self.props.sounds[key].length)
+	const audio = self.props.sounds[key][index]
+	audio.play()
+}
+
 function playerSendLike(self, data){
 	const { players } = self.props
-	console.log('in player send like', data, newPlayers)
+	console.log('platyer sending like',  (new Date().getMilliseconds()))
 	let newPlayers = Object.assign([], players)
 	for (var i = 0; i < newPlayers.length; i++){
 		if (newPlayers[i].name === data.name && newPlayers[i].answer === data.answer){
-			console.log('player found')
 			newPlayers[i].likes += 1
 			self.props.updatePlayers(newPlayers)
 		}
@@ -64,19 +70,12 @@ function revealScores(self){
 	
 	var players = Object.assign([], self.props.players)
 	var answers = Object.assign([], self.props.question.answers)
-
-	
 	for (var i = 0; i < answers.length; i++){
 		var correctAnswer = players.find(p => p.answer === answers[i].answer)
-		
 		if (correctAnswer){
-
-			
-
 			answers[i].show = true
 		}
 	}
-
 	self.props.updateAnswers(answers)
 }
 
@@ -93,6 +92,7 @@ function allPlayersHaveAnswered(players){
 
 
 function showHints(self, data){
+	playVoiceover(self, 'termComment')
 	self.props.sounds.typing.pause()
 	self.props.setGameState('waiting')
 	self.props.push('/host/question')
@@ -109,8 +109,10 @@ function endCountdown(self, data){
 	socket.emit('send-player-waiting', data)
 	
 		self.props.setViewResponses(true)
-	
-	
+}
+
+function sendPlayerWaiting(room){
+	socket.emit('send-player-waiting', room)
 }
 
 function startGame(self, data){
@@ -123,7 +125,7 @@ function startGame(self, data){
 	setTimeout(() => {
 		self.props.setScreenLoadingState('in')
 		// self.props.sounds.typing.play()
-		self.props.setGameState('question-entry')
+		self.props.setGameState('waiting')
 		self.props.push('/host/instructions')
 	}, self.props.dev ? 0 : 3500)
 }
@@ -161,26 +163,51 @@ function restartGame(self, data){
 }
 
 function endGame(self){
-	var audio = new Audio(require('assets/sounds/end.wav'));
-	audio.play()
+	
+	// var audio = new Audio(require('assets/sounds/end.wav'));
+	// audio.play()
+	// audio.onended = () => {
+		playVoiceover(self, 'end')
+	// }
 	self.props.setGameState('end')
 	self.props.push('/host/end')
 	socket.emit('host-end-game', self.props.room)
 }
 
+
+
 function sendQuestionInput(self){
-	self.props.sounds.typing.play()
-	//this function should push to host holding screen
-	self.props.setGameState('question-entry')
-	const player = self.props.players[self.props.questionIndex ]
-	const data = {
-		player, 
-		room: self.props.hostRoom
-	}
 	
-	socket.emit('host-send-question-input' , data)
-	self.props.push('/host/question-input')
-	self.props.setScreenLoadingState('in')
+	// self.props.sounds.typing.play()
+	//this function should push to host holding screen
+	
+	
+	
+		self.props.push('/host/question-input')
+		self.props.setScreenLoadingState('in')	
+		playVoiceover(self, 'choosePlayer')
+
+			setTimeout(() => {
+				
+				playVoiceover(self, 'affirmative')
+				self.props.setGameState('question-entry')
+				setTimeout(() => {
+					playVoiceover(self, 'enterTerm')
+					const player = self.props.players[self.props.questionIndex ]
+					const data = {
+						player, 
+						room: self.props.hostRoom
+					}
+					socket.emit('host-send-question-input' , data)
+					self.props.setScreenLoadingState('in')
+				},1000)
+				
+			},4000)
+		
+	
+	
+	
+	
 }
 
 function playerLeft(self, data){
@@ -192,7 +219,6 @@ function roomGenerated(self, data){
 }
 
 function sendLikes(self, data){
-	console.log('sending likes')
 	socket.emit('host-send-likes', data)
 }
 
@@ -328,8 +354,9 @@ function setPlayerName(self, data){
 }
 
 function sendAnswerInput(self, data){
-	self.props.sounds.typing.pause()
-	self.props.sounds.timer.play()
+	// self.props.sounds.typing.pause()
+	// self.props.sounds.timer.play()
+	playVoiceover(self, 'round' + self.props.round)
 	self.props.sounds.timer.loop = true
 	self.props.setGameState('answer-entry')
 	socket.emit('host-send-answer-input', self.props.room)
@@ -355,8 +382,10 @@ function joinRoom(data, self){
 
 
 export { 
+	playVoiceover,
 	endCountdown,
 	endGame,
+	sendPlayerWaiting,
 	sendAnswerInput,
 	sendQuestionInput,
 	sendLikes,
