@@ -47,8 +47,8 @@ exports.connected = function(socket){
 	}
 
 
-	createUniqueRoomId()
-	// createDevRoom()
+	// createUniqueRoomId()
+	createDevRoom()
 	// Rooms.find({}, (err, rooms) => {
 	// 	console.log('All rooms', rooms)
 	// 	checkRoom()
@@ -87,6 +87,7 @@ exports.sendAnswerInput = ( socket, io, data) => {
 }
 
 exports.sendLikes = ( socket, io, data) => {
-	console.log('sending likes')
+	
 	socket.broadcast.to(data.room.long).emit('host-sending-likes', data)	
+	socket.to(data.player.id).emit('waiting')
 }

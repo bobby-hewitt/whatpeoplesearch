@@ -5,6 +5,7 @@ export default class QuestionInput extends Component {
 
 	constructor(props){
 		super(props)
+		this.timeout = false
 		this.state = {
 			isLoaded: false,
 			index: 0
@@ -22,12 +23,16 @@ export default class QuestionInput extends Component {
 
 	getNewPlayer(){
 		this.setState({index: this.state.index+ 1})
-		if (this.props.gameState !== 'question-input'){
-			setTimeout(() => {
+		if (this.props.isChoosing){
+			this.timeout = setTimeout(() => {
 				this.getNewPlayer()
 			},150)
 		}
 
+	}
+
+	componentWillUnmount(){
+		clearTimeout(this.timeout)
 	}
 
 
@@ -36,9 +41,8 @@ export default class QuestionInput extends Component {
 
 		const { name, players, isChoosing } = this.props
 		const { index } = this.state
-		// console.log(index % (players.length))
+		
 		const player = players[index % players.length]
-		console.log('isChoosing', isChoosing)
 		return(
 			<div className="hostQuestionInputContainer">
 				{player && isChoosing  &&

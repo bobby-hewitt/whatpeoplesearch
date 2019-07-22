@@ -33,7 +33,7 @@ function hostQuit(self){
 }
 
 function playVoiceover(self, key){
-	console.log('playing voice', key, self)
+	
 	const index = Math.floor(Math.random() * self.props.sounds[key].length)
 	const audio = self.props.sounds[key][index]
 	audio.play()
@@ -41,7 +41,7 @@ function playVoiceover(self, key){
 
 function playerSendLike(self, data){
 	const { players } = self.props
-	console.log('platyer sending like',  (new Date().getMilliseconds()))
+	
 	let newPlayers = Object.assign([], players)
 	for (var i = 0; i < newPlayers.length; i++){
 		if (newPlayers[i].name === data.name && newPlayers[i].answer === data.answer){
@@ -182,7 +182,7 @@ function sendQuestionInput(self){
 	//this function should push to host holding screen
 	
 	
-		self.props.nextQuestion(0)
+		
 		self.props.push('/host/question-input')
 		self.props.setScreenLoadingState('in')	
 		playVoiceover(self, 'choosePlayer')
@@ -192,8 +192,10 @@ function sendQuestionInput(self){
 				playVoiceover(self, 'affirmative')
 				self.props.setGameState('question-entry')
 				setTimeout(() => {
+
 					playVoiceover(self, 'enterTerm')
 					const player = self.props.players[self.props.questionIndex ]
+					
 					const data = {
 						player, 
 						room: self.props.hostRoom
@@ -328,16 +330,16 @@ function playerJoined(self, data){
 	if (joinState === 'rejoin'){
 		data = getRejoinGameState(self, data)
 		self.props.sounds.bounce.play()
-		console.log('player rejoined')
-		console.log(data)
+		
+		
 
 		socket.emit('host-sending-game-state', data)
 	} else if (joinState === 'new'){
 		data.gameState = 'welcome'
 		self.props.sounds.bounce.play()
 
-		console.log('new player joined')
-		console.log(data)
+		
+		
 		socket.emit('host-sending-game-state', data)
 	} else {
 		socket.emit('host-send-leave-room-instruction', data)

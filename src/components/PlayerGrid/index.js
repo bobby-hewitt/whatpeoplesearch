@@ -16,7 +16,6 @@ export default class Grid extends Component {
 
 	render(){
 		const { players, title, room, isVisible } = this.props
-		console.log('player grid visible', isVisible)
 		return(
 			<div className="playersContainer">
 				<div className="fakeMenu">

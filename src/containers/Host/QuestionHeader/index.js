@@ -207,7 +207,7 @@ class QuestionHeader extends Component {
 							//next question
 							// sendLikes(this, {players: Object.assign([], players), room: hostRoom})
 							//experimentally putting this in here.
-							this.props.nextQuestion()
+							// this.props.nextQuestion()
 
 							this.props.push('/host/scores')
 						}
