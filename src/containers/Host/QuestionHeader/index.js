@@ -78,7 +78,7 @@ class QuestionHeader extends Component {
 	updateScore(i , score){
 		const { players } = this.props 
 		var newPlayers = Object.assign([], players)
-		newPlayers[i].score += score
+		newPlayers[i].roundScore += score
 		this.props.updatePlayers(newPlayers)
 	}
 
@@ -124,7 +124,7 @@ class QuestionHeader extends Component {
 			} else {
 				for (var j = 0; j < answers[i].players.length; j++){
 
-					newPlayers[answers[i].players[j]].score += Math.floor(answers[i].score / answers[i].players.length)
+					newPlayers[answers[i].players[j]].roundScore += Math.floor(answers[i].score / answers[i].players.length)
 					this.props.updatePlayers(newPlayers)
 				}
 
@@ -195,9 +195,8 @@ class QuestionHeader extends Component {
 			setTimeout(() => {
 				
 				this.setState({player: players[questionIndex], bonus: answeredCount}, () => {
-					newPlayers[questionIndex].score += 100 * answeredCount
+					newPlayers[questionIndex].roundScore += 100 * answeredCount
 					this.props.updatePlayers(newPlayers)
-					
 					setTimeout(() => {
 						//add bonus points
 						this.setState({player: false, bonus: false, hideAnswers: false}) 

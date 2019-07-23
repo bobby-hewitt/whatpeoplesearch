@@ -22,7 +22,8 @@ export default class Player extends Component {
 	}
 
 	componentWillReceiveProps(np){
-		if ((np.score && (this.props.score || this.props.score === 0)) && np.score > this.props.score){
+		if ((this.props.showPoints && np.score && (this.props.score || this.props.score === 0)) && np.score > this.props.score){
+
 			if (this.props.pointsSound){
 				this.props.pointsSound.play()
 			}
@@ -32,12 +33,12 @@ export default class Player extends Component {
 
 
 	render(){
-		const { name, image, planet, disconnected, index, score, hasSubmitted, color,  large, showScores, showLikeAnimation, likes, showLikes, answer, hideName, mostLiked } = this.props
+		const { name, image, planet, disconnected, index, score, hasSubmitted, isScores, color,  large, showScores, showLikeAnimation, likes, showLikes, answer, hideName, mostLiked } = this.props
 		const playerImage = disconnected ? require('assets/images/png/disconnected.png') : image
 		const scoreToShow = score || 0
 		
 		return(
-			<div className={`hostPlayerOuterContainer ${large && 'large'}  ${name && 'isVisible'}`}>
+			<div className={`hostPlayerOuterContainer ${large && 'large'}  ${name && 'isVisible'} ${isScores && 'isScores'}`}>
 			
 			<div className={`hostPlayerContainer  ${large && 'large'} ${hideName && 'hideName'}`}>
 				<div className={`playerCircle ${large && 'large'} ${disconnected && 'disconnected'}`}   style={image ? {backgroundImage:'url(' + playerImage + ')'} : {background:color}}>
@@ -56,13 +57,7 @@ export default class Player extends Component {
 				{showLikeAnimation &&
 					<Likes likes={likes}/>
 				}
-				{showLikes && answer && answer !== 'pass' &&
-					<div className="playerDisplayedAnswerContainer">
-						
-						<p className="score">{`${likes}`}<span className="thumbsup">👍</span></p>
-						
-					</div>
-				}
+				
 			</div>
 			{this.state.showPoints && 
 				

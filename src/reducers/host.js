@@ -49,7 +49,9 @@ export default (state = initialState, action) => {
       }
       if (!disconnectedPlayerFound && state.gameState === 'welcome'){
         console.log('creating new player')
-        action.payload.score = 0
+        action.payload.score = state.players.length
+        //need to set to 0
+        action.payload.roundScore = Math.floor(Math.random() * 10)
         newPlayers.push(action.payload)
       } 
       return {

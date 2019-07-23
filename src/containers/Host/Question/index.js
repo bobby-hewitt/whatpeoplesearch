@@ -12,8 +12,7 @@ export default class Question extends Component {
 		this.countdownTimeout = false
 		this.state = {
 			visible: -1,
-			countdown: false,
-			
+			countdown: false,	
 		}
 	}
 
@@ -21,7 +20,7 @@ export default class Question extends Component {
 		if (this.props.answers.length){
 			setTimeout(() => {
 				this.showSearchTerm(0)
-			},100)
+			},this.props.dev ? 1 : 100)
 		}
 	}
 
@@ -33,7 +32,7 @@ export default class Question extends Component {
 			this.props.timerSound.play();
 		}
 		this.countdownTimeout = setTimeout(() => {
-			if (this.state.countdown > 0){
+			if (this.state.countdown > 1){
 				this.setState({countdown: this.state.countdown - 1})
 				this.countdown()
 				if (this.state.countdown === 30){
@@ -64,14 +63,14 @@ export default class Question extends Component {
 		this.setState({showSearchTerm: true})
 		setTimeout(() => {
 			this.showAnswer(0)
-		},300)
+		},this.props.dev ? 1 : 200)
 	}
 
 	componentWillReceiveProps(np){
 		if (!this.props.answers.length && np.answers.length){
 			setTimeout(() => {
 				this.showSearchTerm(0)
-			},100)
+			},this.props.dev ? 1 : 100)
 		}
 		if (this.props.isAnswers !== np.isAnswers){
 			if (np.isAnswers){
@@ -121,7 +120,7 @@ export default class Question extends Component {
 		return(
 			<div className="questionContainer">
 				{(countdown || countdown === 0) &&
-					<p className={`countdown ${countdown > 50 ? 'green' : 'red'}`}><span className="a">Time left: </span>{this.state.countdown}</p>
+					<p className={`countdown ${countdown > 50 ? 'green' : 'red'}`}><span className="a"></span>{this.state.countdown}</p>
 				}
 				
 

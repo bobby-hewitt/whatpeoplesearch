@@ -5,10 +5,14 @@ import { connect } from 'react-redux'
 import { Player, ColorText } from 'components'
 import { setGameState, setScreenLoadingState, nextQuestion, updateAnswers, setRound, updatePlayers, setViewResponses,addAnswersToLikes} from 'actions/host'
 import { sendQuestionInput, playVoiceover } from 'containers/SocketListener/host'
+import ScoreboardPlayer from './ScoreboardPlayer'
+import positions from 'data/scoreboardPositions'
 import './style.scss'
 const colors = [
 	'#4285F4','#DB4437','#F4B400','#4285F4','#0F9D58','#DB4437'
 ]
+
+
 
 class ScoreBoard extends Component {
 
@@ -16,14 +20,34 @@ class ScoreBoard extends Component {
 		super(props)
 		this.timeouts = []
 		this.state = {
-			visible: -1
+			visible: -1,
+			end: false,
 		}
 	}
 
+
 	componentWillMount(){
 		const { players } = this.props
-		const newPlayers = players.sort(function(a, b){return b.score-a.score})
-		this.setState({players: newPlayers})
+		
+		const scores = this.assignScoreValue(players)
+		for (var i = 0; i < players.length; i++){
+			scores.find( (s, j) => {
+				if (s.id === players[i].id){
+					console.log('found matching id', players[i], j)
+					players[i].position = j
+				}
+			})
+		}
+		this.setState({players: players})
+	}
+
+	assignScoreValue(players){
+		var scores = []
+		for (var i = 0; i < players.length; i++){
+			scores.push({id: players[i].id, score: players[i].score})
+		}
+		scores = scores.sort(function(a, b){return b.score-a.score})
+		return scores
 	}
 
 	componentDidMount(){
@@ -31,6 +55,32 @@ class ScoreBoard extends Component {
 		playVoiceover(this, 'scores')
 	}
 
+
+	updateScores(){
+		const { players } = this.props
+		let newPlayers = Object.assign([], players)
+		for (var i = 0; i < newPlayers.length; i++){
+			console.log('updating, ', newPlayers[i].score, newPlayers[i].roundScore)
+			newPlayers[i].score = newPlayers[i].score + newPlayers[i].roundScore;
+			newPlayers[i].roundScore = 0;
+		}
+		this.props.updatePlayers(newPlayers)
+
+		const scores = this.assignScoreValue(newPlayers)
+		for (var i = 0; i < newPlayers.length; i++){
+			scores.find( (s, j) => {
+				if (s.id === newPlayers[i].id){
+					console.log('found matching id', newPlayers[i], j)
+					newPlayers[i].position = j
+				}
+			})
+		}
+		
+		
+		this.setState({players:newPlayers})
+
+
+	}
 	showPlayer(index){
 		const { players } = this.props
 		this.timeouts[index] = setTimeout(() => {
@@ -39,22 +89,35 @@ class ScoreBoard extends Component {
 					this.showPlayer(index +1)
 				} else {
 					setTimeout(() => {
-						addAnswersToLikes(Object.assign([], players))
-						this.props.updateAnswers([])
-						this.props.setRound(1)
-						var newPlayers = Object.assign([], players)
-						for (var i = 0; i < players.length; i++){
-							players[i].answer = false
-							players[i].hasSubmitted = false
-							players[i].likes = 0;
-						}
-						this.props.updatePlayers(newPlayers)
-						this.props.setViewResponses(false)
-						this.props.nextQuestion()
-						sendQuestionInput(this)
-						
-						this.props.push('/host/question-input')
-					}, 5000)
+						this.updateScores()
+						setTimeout(() => {
+							if (!this.props.isEnd){
+								
+									addAnswersToLikes(Object.assign([], players))
+									this.props.updateAnswers([])
+									this.props.setRound(1)
+									var newPlayers = Object.assign([], players)
+									for (var i = 0; i < players.length; i++){
+										players[i].answer = false
+										players[i].hasSubmitted = false
+										
+									}
+									this.props.updatePlayers(newPlayers)
+									this.props.setViewResponses(false)
+									this.props.nextQuestion()
+									sendQuestionInput(this)
+									
+									this.props.push('/host/question-input')
+								
+							} else {
+								playVoiceover(this, 'end')
+								this.setState({
+									end: true
+								})
+							}
+						}, 4000)
+					},1000)
+					
 				}
 			})
 		},500)
@@ -67,20 +130,35 @@ class ScoreBoard extends Component {
 	}
 
 
+
+
+
 	render(){
-		const { players } = this.state
+		const { players, end } = this.state
 		return(
 			<div className="hostEndContainer">
-				<ColorText text="The scores"/>
+				
 				<div className="finalPlayerOuterContainer">
+
 				{players && players.map((player, i) => {
+					console.log(player)
 					return(
-						<div key={i}className={`finalPlayerInnerContainer ${this.state.visible >= i && 'isVisible'}`}>
-							<h4 className="position">#{i+1} {player.name}</h4>
-							<Player color={colors[i]}key={i} {...player} large showScores showLikes hideName/>
-						</div>
+						<ScoreboardPlayer
+							key={i}  
+							player={player}
+							visible={this.state.visible >= player.position}
+							score={player.score}
+							physicalPosition={positions[players.length][player.position]}
+
+						/>
+					
 					)
 				})}
+				{end &&
+					<div className="scoreboardEndContainer">
+						<ColorText text="That's it" />
+					</div>
+				}
 				</div>
 			</div>
 		)

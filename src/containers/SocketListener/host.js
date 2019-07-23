@@ -32,10 +32,16 @@ function hostQuit(self){
 	
 }
 
-function playVoiceover(self, key){
+function playVoiceover(self, key, callback){
 	const index = Math.floor(Math.random() * self.props.sounds[key].length)
 	const audio = self.props.sounds[key][index]
 	audio.play()
+	audio.onended = () => {
+		if (callback){
+			callback()
+		}
+	}
+	
 }
 
 function playerSendLike(self, data){
@@ -165,7 +171,7 @@ function endGame(self){
 	// var audio = new Audio(require('assets/sounds/end.wav'));
 	// audio.play()
 	// audio.onended = () => {
-		playVoiceover(self, 'end')
+		// playVoiceover(self, 'end')
 	// }
 	self.props.setGameState('end')
 	self.props.push('/host/end')
@@ -261,7 +267,7 @@ const colors = [
 function createNewPlayerObj(self, data){
 	var newPlayers = Object.assign([], self.props.players)
 	  data.isConnected = true
-	  data.likes = 0;
+	  
 	  data.color = colors[self.props.players.length % 6]
 	  var disconnectedPlayerFound = false 
 	  for (var i = 0; i < newPlayers.length; i++ ){
@@ -278,8 +284,9 @@ function createNewPlayerObj(self, data){
 
 	  }
 	  if (!disconnectedPlayerFound && self.props.gameState === 'welcome'){
-	    
+	    data.roundScore = 0
 	    data.score = 0
+	    data.likes = 0;
 	    data.image = avatars[Math.floor(Math.random() * avatars.length)]
 	    newPlayers.push(data)
 	    return {
@@ -360,10 +367,13 @@ function setPlayerName(self, data){
 function sendAnswerInput(self, data){
 	// self.props.sounds.typing.pause()
 	// self.props.sounds.timer.play()
-	playVoiceover(self, 'round' + self.props.round)
 	self.props.sounds.timer.loop = true
+	playVoiceover(self, 'round' + self.props.round)
 	self.props.setGameState('answer-entry')
 	socket.emit('host-send-answer-input', self.props.room)
+	
+	
+
 }
 
 function gameEnd(){

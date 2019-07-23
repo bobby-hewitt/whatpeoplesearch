@@ -14,7 +14,7 @@ import Loading from './Loading'
 import RequireAudio from './RequireAudio'
 import ScoreBoard from './ScoreBoard'
 import { PlayerGrid } from 'components'
-import { setViewResponses, setGameState, setScreenLoadingState, nextQuestion } from 'actions/host'
+import { setViewResponses, setGameState, setScreenLoadingState, nextQuestion, updatePlayers } from 'actions/host'
 import { sendQuestionInput } from 'containers/SocketListener/host'
 class Host extends Component {
 
@@ -71,8 +71,9 @@ class Host extends Component {
 
 
 	render(){
-		const { room , players, question, gameState, questionIndex, isAnswers, setViewResponses, sounds, loadingState, dev, round} = this.props
+		const { room , players, question, gameState, questionIndex, isAnswers, setViewResponses, updatePlayers, sounds, loadingState, dev, round} = this.props
 		const showPlayerGrid = this.showPlayerGrid()
+		console.log(players)
 		return(
 			<div className="hostContainer">
 				<SocketListener isHost/>
@@ -84,15 +85,14 @@ class Host extends Component {
 				<div className="hostMainContainer">
 					<Route exact path="/host" render={() => <PageTitle  title="Trending.guru" room={room} backgroundSound={sounds.typing} loadingState={loadingState}/>} />
 					<Route exact path="/host/instructions" render={() => <Instructions dev={dev} sounds={sounds}complete={this.instructionsComplete.bind(this)} setScreenLoadingState={this.props.setScreenLoadingState.bind(this)}/>} />
-					<Route exact path="/host/question" render={() => <Question showPlayerGrid={showPlayerGrid} round={round}loadingState={loadingState} question={question.question} answers={question.answers} players={players} isAnswers={isAnswers} room={room} setViewResponses={this.props.setViewResponses.bind(this)} timerSound={sounds.timer} sounds={sounds}setGameState={this.props.setGameState.bind(this)}/>} />
-					
+					<Route exact path="/host/question" render={() => <Question dev={dev} showPlayerGrid={showPlayerGrid} round={round}loadingState={loadingState} question={question.question} answers={question.answers} players={players} isAnswers={isAnswers} room={room} setViewResponses={this.props.setViewResponses.bind(this)} timerSound={sounds.timer} sounds={sounds}setGameState={this.props.setGameState.bind(this)}/>} />
 					<Route exact path="/host/question-input" render={() => <QuestionInput isChoosing={gameState !== 'question-entry'} players={players} name={players && players[questionIndex] ? players[questionIndex].name: ''} />} />
-					<Route exact path="/host/end" render={() => <End />} />
-					<Route exact path="/host/scores" render={() => <ScoreBoard />} />
+					<Route exact path="/host/end" render={() => <ScoreBoard updatePlayers={updatePlayers} isEnd/>} />
+					<Route exact path="/host/scores" render={() => <ScoreBoard updatePlayers={updatePlayers}/>} />
 					<Loading loading={loadingState === 'out'} sounds={sounds} dev={dev}/>
 				</div>
 				<div className="hostPlayersContainer">
-				<PlayerGrid isVisible={showPlayerGrid}players={players} pointsSound={sounds.coin}title="What would yougle do" room={room}/>	
+				<PlayerGrid isVisible={showPlayerGrid && players.length} players={players} pointsSound={sounds.coin}title="What would yougle do" room={room}/>	
 				<Loading />
 				{this.state.requireAudio && 
 					<RequireAudio onRequireAudio={this.onRequireAudio.bind(this)}/>
@@ -121,6 +121,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   push: (path) => push(path),
   setViewResponses,
   nextQuestion,
+  updatePlayers,
   setScreenLoadingState,
   setGameState,
 }, dispatch)
