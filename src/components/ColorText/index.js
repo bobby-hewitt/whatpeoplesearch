@@ -26,9 +26,12 @@ export default class ColorText extends Component {
 				this.setState({visible: i}, () => {
 					this.displayTitle(i + 1)
 				})		
-			} else if (this.props.loadComplete){
+			} else {
 				this.setState({visible: 20})
-				this.props.loadComplete()
+				if (this.props.loadComplete){
+				
+					this.props.loadComplete()
+				}
 			}
 		}, this.timeoutTime)
 	}

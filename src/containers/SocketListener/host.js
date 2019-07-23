@@ -185,11 +185,10 @@ function sendQuestionInput(self){
 		
 		self.props.push('/host/question-input')
 		self.props.setScreenLoadingState('in')	
-		playVoiceover(self, 'choosePlayer')
+		if (!self.props.dev) playVoiceover(self, 'choosePlayer')
 
 			setTimeout(() => {
-				
-				playVoiceover(self, 'affirmative')
+				if (!self.props.dev) playVoiceover(self, 'affirmative')
 				self.props.setGameState('question-entry')
 				setTimeout(() => {
 
@@ -202,9 +201,9 @@ function sendQuestionInput(self){
 					}
 					socket.emit('host-send-question-input' , data)
 					self.props.setScreenLoadingState('in')
-				},1000)
+				}, self.props.dev ? 1 : 1000)
 				
-			},4000)
+			}, self.props.dev ? 1 : 4000)
 		
 	
 	
