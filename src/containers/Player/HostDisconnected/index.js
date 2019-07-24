@@ -5,7 +5,7 @@ import './style.scss'
 export default class HostDisconnected extends Component {
 
 	onClick(){
-		this.props.push('/p')
+		this.props.push('/')
 	}
 	render(){
 		return(

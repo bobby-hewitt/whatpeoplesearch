@@ -31,7 +31,7 @@ class NameTeam extends Component {
 		if (key === 'roomcode'){
 			value = e.target.value.toUpperCase()
 		} else {
-			value = e.target.value.slice(0,7)
+			value = e.target.value.slice(0,12)
 		}
 		this.setState({[key]: value})
 	}
@@ -41,16 +41,17 @@ class NameTeam extends Component {
 		return(
 			<div className="loginContainer">
 				<ColorText text="Let's go" letterStyle={{fontSize:'50px'}}/>
-				<TextInput 
-					placeholder="Name"
-					value={name} 
-					onChange={this.onChange.bind(this, 'name')}
-					/>
+				
 				<TextInput 
 					placeholder="Roomcode"
 					value={roomcode} 
-					onContinue={this.onContinue.bind(this)}
 					onChange={this.onChange.bind(this, 'roomcode')}
+					/>
+				<TextInput 
+					placeholder="Name"
+					value={name}
+					onContinue={this.onContinue.bind(this)} 
+					onChange={this.onChange.bind(this, 'name')}
 					/>
 				<div>
 					
