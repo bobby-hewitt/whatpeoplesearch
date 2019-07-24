@@ -31,7 +31,7 @@ class Player extends Component {
 
 	componentWillMount(){
 		// if (window.localStorage.quiz){
-			this.props.push('/p')
+			this.props.push('/')
 		// }
 	}
 	render(){
@@ -40,15 +40,15 @@ class Player extends Component {
 			<div className="playerContainer">
 				<SocketListener />
 				<div className="routeContentContainer">
-					<Route exact path="/p" render={() => <EnterName push={this.changeScene.bind(this)}/>} />
-					<Route exact path="/p/waiting-start" render={() => <WaitingStart push={this.changeScene.bind(this)}/>} />
-					<Route exact path="/p/waiting" render={() => <Waiting />} />
-					<Route exact path="/p/question-input" render={() => <QuestionInput />} />
-					<Route exact path="/p/question-input-error" render={() => <QuestionInputError />} />
-					<Route exact path="/p/answer-input" render={() => <AnswerInput />} />
-					<Route exact path="/p/end" render={() => <End push={this.props.push.bind(this)}room={room}/>} />
-					<Route exact path="/p/likes" render={() => <Likes setLikes={this.props.setLikes}likes={likes} room={room}/>} />
-					<Route exact path="/p/host-disconnected" render={() => <HostDisconnected push={this.props.push.bind(this)}/>} />
+					<Route exact path="/" render={() => <EnterName push={this.changeScene.bind(this)}/>} />
+					<Route exact path="/waiting-start" render={() => <WaitingStart push={this.changeScene.bind(this)}/>} />
+					<Route exact path="/waiting" render={() => <Waiting />} />
+					<Route exact path="/question-input" render={() => <QuestionInput />} />
+					<Route exact path="/question-input-error" render={() => <QuestionInputError />} />
+					<Route exact path="/answer-input" render={() => <AnswerInput />} />
+					<Route exact path="/end" render={() => <End push={this.props.push.bind(this)}room={room}/>} />
+					<Route exact path="/likes" render={() => <Likes setLikes={this.props.setLikes}likes={likes} room={room}/>} />
+					<Route exact path="/host-disconnected" render={() => <HostDisconnected push={this.props.push.bind(this)}/>} />
 				</div>
 				
 			</div>

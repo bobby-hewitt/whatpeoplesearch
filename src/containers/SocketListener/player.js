@@ -28,7 +28,7 @@ function subscribeToPlayerEvents(self) {
 }
 
 function hostDisconnected(self){
-	self.props.push('/p/host-disconnected')
+	self.props.push('/host-disconnected')
 }
 
 
@@ -39,7 +39,7 @@ function roomFull(self){
 
 function getLikes(self, data){
 	
-	self.props.push('/p/likes')
+	self.props.push('/likes')
 	self.props.setLikes(data.player)
 	
 }
@@ -48,36 +48,36 @@ function errorWithQuestion(self){
 	//need to message the error.
 	console.log('error')
 	self.props.setLoading(false)
-	self.props.push('/p/question-input-error')
+	self.props.push('/question-input-error')
 }
 
 function endGame(self){
 	self.props.setLoading(false)
-	self.props.push('/p/end')
+	self.props.push('/end')
 }
 
 function waiting(self){
-	self.props.push('/p/waiting')
+	self.props.push('/waiting')
 }
 
 function questionInput(self){
 	self.props.setLoading(false)
-	self.props.push('/p/question-input')
+	self.props.push('/question-input')
 }
 function answerInput(self){
 	self.props.setLoading(false)
-	self.props.push('/p/answer-input')
+	self.props.push('/answer-input')
 }
 
 function sendQuestion(self, data){
 	socket.emit('player-submit-question', data)
-	self.props.push('/p/waiting')
+	self.props.push('/waiting')
 }
 
 function sendAnswer(self, data){
 	console.log('sending answer', data)
 	socket.emit('player-send-answer', data)
-	self.props.push('/p/waiting')
+	self.props.push('/waiting')
 }
 
 function hostQuit(self){
@@ -101,15 +101,15 @@ function successJoiningRoom(self, data){
 	self.props.setLoading(false)
 	switch(data.gameState){
 		case 'welcome':
-			return self.props.push('/p/waiting-start')
+			return self.props.push('/waiting-start')
 		case 'question-entry':
-			return self.props.push('/p/question-input')
+			return self.props.push('/question-input')
 		case 'answer-entry':
-			return self.props.push('/p/answer-input')
+			return self.props.push('/answer-input')
 		case 'waiting':
-			return self.props.push('/p/waiting')
+			return self.props.push('/waiting')
 		case 'end':
-			return self.props.push('/p/end')
+			return self.props.push('/end')
 		default:
 			return
 	}
@@ -121,11 +121,11 @@ function errorJoiningRoom(self, data){
 	if (data && data.long){
 		console.log('socket leaving room')
 		self.props.setLoading(false)
-		self.props.push('/p')
+		self.props.push('/')
 		socket.emit('leave-room', data.long)
 	} else {
 		self.props.setLoading(false)
-		self.props.push('/p')
+		self.props.push('/')
 	}
 }
 
@@ -151,7 +151,7 @@ function joinRoom(self, data){
 	const prevId = window.localStorage.quiz ? JSON.parse(window.localStorage.quiz).id : false
 	data.prevId = prevId
 	socket.emit('player-connected', data)
-	self.props.push('/p/waiting')
+	self.props.push('/waiting')
 }
 
 function sendName(data){

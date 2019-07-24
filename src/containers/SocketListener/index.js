@@ -4,10 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import io from 'socket.io-client';
 import {subscribeToPlayerEvents} from './player'
-import {subscribeToHostEvents} from './host'
-import { hostSetRoom, playerJoined, playerLeft, showHints, playerAnswerReceived, updateAnswers, setViewResponses, setGameState, setScreenLoadingState, updatePlayers, setRound, nextQuestion, } from 'actions/host'
 import { playerSetRoom, playerSetSelf, setLoading, setLikes } from 'actions/player'
-import { setSound } from 'actions/sounds'
 
 class SocketListener extends Component {
   constructor(props){
@@ -15,25 +12,7 @@ class SocketListener extends Component {
   }
 
   componentDidMount(){
-    if (this.props.isHost){
-      this.props.sounds.typing.play()
-      subscribeToHostEvents(this)
-    } else {
       subscribeToPlayerEvents(this)
-    }
-     
-    // this.props.sounds.typing.play()
-    // this.props.sounds.typing.addEventListener('canplaythrough', () => {
-    //     console.log('should play')
-    //     this.props.sounds.typing.play()
-    //     this.props.sounds.typing.loop = true
-    // })
-    
-    // let refs = Object.keys(this.refs)
-    // for (var i = 0; i < refs.length; i++){
-    //     this.addListener(refs[i])
-
-    // }
   }
 
 
@@ -50,34 +29,15 @@ class SocketListener extends Component {
 
 const mapStateToProps = state => ({
   // count: state.counter.count
-  gameState: state.host.gameState,
   playerRoom: state.player.room,
-  players: state.host.players,
-  question: state.host.question,
-  questionIndex: state.host.questionIndex,
-  sounds: state.sounds,
-  hostRoom: state.host.room,
   dev: state.dev
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
   push: (path) => push( path),
-  hostSetRoom,
-  setRound,
-  nextQuestion,
   setLikes,
   playerSetSelf,
-  updatePlayers,
-  setViewResponses,
-  setScreenLoadingState,
-  playerJoined,
-  setGameState,
   setLoading,
-  updateAnswers,
-  setSound,
-  playerLeft,
-  playerAnswerReceived,
-  showHints
 }, dispatch)
 
 export default connect(
