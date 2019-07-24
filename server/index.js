@@ -61,6 +61,8 @@ io.on('connection', function(socket){
   	socket.on('send-player-waiting', Host.sendPlayerWaiting.bind(this, socket, io))
   	socket.on('host-send-likes', Host.sendLikes.bind(this, socket, io))
   	socket.on('player-send-like', Player.sendLike.bind(this, socket))
+  	socket.on('host-send-answer-input-to-player', Host.sendAnswerInputToPlayer.bind(this, socket))
+  	socket.on('send-single-player-waiting', Host.sendSinglePlayerWaiting.bind(this, socket))
 });
 
 
@@ -73,7 +75,11 @@ function disconnect(socket){
 	// Rooms.remove({})
 	Rooms.findOne({long: socket.id}, (err, room) => {
 		//if it is a host leaving then delete room from database
-		if (room) return room.remove()
+		if (room){
+			console.log('host gone')
+			socket.broadcast.to(room.long).emit('host-disconnected')
+			return room.remove()
+		} 
 		else {
 			const rooms = Object.keys(socket.adapter.rooms)
 			for (var i = 0; i < rooms.length; i++){

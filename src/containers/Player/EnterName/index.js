@@ -36,6 +36,10 @@ class NameTeam extends Component {
 		this.setState({[key]: value})
 	}
 
+	onHost(){
+		window.location.replace("http://host.trending.guru");
+	}
+
 	render(){
 		const { name, roomcode } = this.state
 		return(
@@ -53,6 +57,9 @@ class NameTeam extends Component {
 					onContinue={this.onContinue.bind(this)} 
 					onChange={this.onChange.bind(this, 'name')}
 					/>
+				
+					<Button onClick={this.onHost.bind(this)} text="I'm the host" help/>
+				
 				<div>
 					
 				</div>
